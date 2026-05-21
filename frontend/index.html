@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DreamRampUp</title>
+</head>
+<body>
+  <h1>Items</h1>
+  <ul id="list">Loading...</ul>
+  <script>
+    fetch('/api/items')
+      .then(r => r.json())
+      .then(items => {
+        document.getElementById('list').innerHTML =
+          items.map(i => `<li>${i.id}: ${i.name}</li>`).join('');
+      })
+      .catch(e => {
+        document.getElementById('list').innerHTML = `<li>Error: ${e}</li>`;
+      });
+  </script>
+</body>
+</html>
