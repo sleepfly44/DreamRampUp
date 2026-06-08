@@ -101,6 +101,11 @@ kubectl -n app get pods   # all should show 2/2
 ```bash
 multipass start rke2-server rke2-agent1 rke2-agent2
 
+# ALWAYS sync clocks immediately — drift breaks Istio mTLS and Calico CNI
+for vm in rke2-server rke2-agent1 rke2-agent2; do
+  multipass exec $vm -- sudo chronyc makestep
+done
+
 # Re-forward Vault if needed
 kubectl -n vault port-forward svc/vault 8200:8200 &
 export VAULT_ADDR=http://127.0.0.1:8200

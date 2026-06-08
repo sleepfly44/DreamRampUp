@@ -12,8 +12,17 @@ spec:
     metadata:
       labels:
         app: backend
+      annotations:
+        traffic.sidecar.istio.io/excludeInboundPorts: "8000"
     spec:
       serviceAccountName: backend
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node-role.kubernetes.io/control-plane
+                    operator: DoesNotExist
       containers:
         - name: backend
           image: docker.io/library/backend:latest
@@ -41,9 +50,12 @@ kind: Service
 metadata:
   name: backend
   namespace: app
+  labels:
+    app: backend
 spec:
   selector:
     app: backend
   ports:
-    - port: 8000
+    - name: http
+      port: 8000
       targetPort: 8000

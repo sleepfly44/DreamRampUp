@@ -64,3 +64,18 @@ Each step has one clear done criterion — a command whose output confirms succe
 | 4.5 | ✅ | Apply allow policy: frontend → backend | `http://app.local` loads successfully again |
 | 4.6 | ✅ | Apply allow policy: backend → postgres | `/api/items` returns data from Postgres |
 | 4.7 | ✅ | Verify no unintended paths are open | Direct curl from an unrelated pod to backend is denied |
+
+---
+
+## Phase 5 — Prometheus + Grafana Monitoring ✅
+
+**Goal:** Prometheus scrapes FastAPI and Postgres metrics; Grafana dashboards visualise them.
+
+| Step | Status | Task | Done when |
+|---|---|---|---|
+| 5.1 | ✅ | Install kube-prometheus-stack via Helm into `monitoring` namespace | All stack pods Running; Prometheus UI reachable |
+| 5.2 | ✅ | Instrument FastAPI with `prometheus-fastapi-instrumentator`; expose `/metrics` | `GET /metrics` returns `http_requests_total` |
+| 5.3 | ✅ | Add `ServiceMonitor` for backend (port `http`, path `/metrics`) | Backend target `health: up` in Prometheus |
+| 5.4 | ✅ | Deploy `prometheus-postgres-exporter` with Istio exclude annotation | `pg_up == 1` in Prometheus |
+| 5.5 | ✅ | Add `ServiceMonitor` for postgres exporter | `pg_stat_database_tup_fetched{datname="appdb"}` present |
+| 5.6 | ✅ | Create Grafana dashboards: FastAPI (req rate, error rate, p99) and Postgres (connections, tps, cache hit) | Both dashboards load with live data |
