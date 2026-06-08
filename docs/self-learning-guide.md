@@ -485,6 +485,12 @@ curl -s http://app.local/api/items
 
 # Restart VMs after Mac sleep
 multipass start rke2-server rke2-agent1 rke2-agent2
+
+# ALWAYS do this immediately after start — clock drift breaks Istio mTLS and Calico CNI
+for vm in rke2-server rke2-agent1 rke2-agent2; do
+  multipass exec $vm -- sudo chronyc makestep
+done
+
 # Then re-forward Vault if needed:
 kubectl -n vault port-forward svc/vault 8200:8200 &
 ```

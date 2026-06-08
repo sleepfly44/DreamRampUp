@@ -1,0 +1,11 @@
+annotations:
+  traffic.sidecar.istio.io/excludeInboundPorts: "9187"
+
+config:
+  datasource:
+    host: postgres-postgresql.app.svc.cluster.local
+    port: "5432"
+    user: appuser
+    password: supersecret
+    database: appdb
+    sslmode: disable
